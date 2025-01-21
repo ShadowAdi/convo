@@ -35,16 +35,18 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="items-center gap-3 hidden md:flex">
-        <Button
-          variant="default"
-          className="items-center hidden gap-2 bg-primary rounded-full w-fit md:flex"
-          size="lg"
-        >
-          <span>Github Repo</span>
-          <span className="text-xl">
-            <BsGithub />
-          </span>
-        </Button>
+        <Link href={"https://github.com/ShadowAdi/convo"} target="_blank">
+          <Button
+            variant="default"
+            className="items-center hidden gap-2 bg-primary rounded-full w-fit md:flex"
+            size="lg"
+          >
+            <span>Github Repo</span>
+            <span className="text-xl">
+              <BsGithub />
+            </span>
+          </Button>
+        </Link>
       </div>
       <Sheet>
         <SheetTrigger className="block md:hidden p-3">
@@ -85,7 +87,6 @@ const Navbar = () => {
                   </Button>
                 </Link>
               </SheetTrigger>
-             
             </div>
           </SheetHeader>
         </SheetContent>

@@ -24,7 +24,13 @@ import fileToIcon from "@/lib/fileToIcon";
 import compressFileName from "@/lib/compress-file-name";
 import bytesToSize from "@/lib/byte_to_size";
 import loadFfmpeg from "@/lib/load-ffmpeg";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { extensions } from "@/lib/Hooks";
 import { Button } from "../ui/button";
 import { accepted_files } from "@/lib/Accepted_Files";
@@ -41,8 +47,6 @@ export default function Dropzone() {
   const [is_done, setIsDone] = useState<boolean>(false);
   const ffmpegRef = useRef<any>(null);
   const [defaultValues, setDefaultValues] = useState<string>("video");
-  const [selcted, setSelected] = useState<string>("...");
-
 
   // functions
   const reset = () => {
@@ -114,12 +118,18 @@ export default function Dropzone() {
     setFiles(data);
     const tmp: Action[] = [];
     data.forEach((file: any) => {
-      const formData = new FormData();
+      const defaultFormat = file.type.includes("image")
+        ? "png"
+        : file.type.includes("video")
+        ? "mp4"
+        : file.type.includes("audio")
+        ? "mp3"
+        : null;
       tmp.push({
         file_name: file.name,
         file_size: file.size,
         from: file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2),
-        to: null,
+        to: defaultFormat, // Set default format here
         file_type: file.type,
         file,
         is_converted: false,
@@ -131,7 +141,7 @@ export default function Dropzone() {
   };
   const handleHover = (): void => setIsHover(true);
   const handleExitHover = (): void => setIsHover(false);
-  const updateAction = (file_name: String, to: String) => {
+  const updateAction = (file_name: String, to: string) => {
     setActions(
       actions.map((action): Action => {
         if (action.file_name === file_name) {
@@ -145,12 +155,12 @@ export default function Dropzone() {
         return action;
       })
     );
-    console.log("action ",actions)
+    console.log("action ", actions);
   };
   const checkIsReady = (): void => {
-    let tmp_is_ready = true;
+    let tmp_is_ready = false;
     actions.forEach((action: Action) => {
-      if (!action.to) tmp_is_ready = false;
+      if (action.to) tmp_is_ready = true; // If at least one file has format selected
     });
     setIsReady(tmp_is_ready);
   };
@@ -207,7 +217,7 @@ export default function Dropzone() {
                 <BiError />
               </Badge>
             ) : action.is_converted ? (
-              <Badge variant="default" className="flex gap-2 bg-green-500">
+              <Badge variant="default" className="flex gap-2 mr-3 bg-green-500">
                 <span>Done</span>
                 <MdDone />
               </Badge>
@@ -228,11 +238,10 @@ export default function Dropzone() {
                     } else if (extensions.video.includes(value)) {
                       setDefaultValues("video");
                     }
-                    setSelected(value);
                     updateAction(action.file_name, value);
                   }}
-                  value={selcted}
-                >
+                  value={typeof action.to === 'string' ? action.to : "..."}
+                  >
                   <SelectTrigger className="w-32 outline-none focus:outline-none focus:ring-0 text-center text-muted-foreground bg-background text-md font-medium">
                     <SelectValue placeholder="..." />
                   </SelectTrigger>

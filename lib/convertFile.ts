@@ -29,6 +29,7 @@ export const convertFile = async (
     const fileData = await file.arrayBuffer();
     const inputBuffer = new Uint8Array(fileData);
     
+    console.log("Input Buffer ",inputBuffer)
     // Generate input and output names
     const inputFileName = `input.${getFileExtension(file_name)}`;
     const outputFileName = `output.${to}`;
@@ -70,6 +71,8 @@ export const convertFile = async (
 
     // Read the output file
     const data = await ffmpeg.readFile(outputFileName);
+
+    console.log("data: ",data)
     
     // Clean up files from virtual filesystem
     try {
@@ -82,6 +85,8 @@ export const convertFile = async (
     // Create blob and URL
     const blob = new Blob([data], { type: `${file_type.split("/")[0]}/${to}` });
     const url = URL.createObjectURL(blob);
+
+    console.log("blob ",blob)
 
     return { url, output: `${removeFileExtension(file_name)}.${to}` };
   } catch (error:any) {
