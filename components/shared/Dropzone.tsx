@@ -145,7 +145,6 @@ export default function Dropzone() {
     setActions(
       actions.map((action): Action => {
         if (action.file_name === file_name) {
-          console.log("FOUND");
           return {
             ...action,
             to,
@@ -155,7 +154,6 @@ export default function Dropzone() {
         return action;
       })
     );
-    console.log("action ", actions);
   };
   const checkIsReady = (): void => {
     let tmp_is_ready = false;
